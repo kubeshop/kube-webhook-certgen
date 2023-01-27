@@ -1,0 +1,143 @@
+project_name: kube-webhook-certgen
+
+dist: "build/dist"
+
+builds:
+  - id: "linux"
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+    goarch:
+      - amd64
+      - arm
+      - arm64
+    goarm:
+      - 6
+      - 7
+    mod_timestamp: "{{ .CommitTimestamp }}"
+
+dockers:
+  -
+    dockerfile: Dockerfile
+    use: buildx
+    goos: linux
+    goarch: amd64
+    image_templates:
+      - "kubeshop/kube-webhook-certgen:{{ .Major }}-amd64"
+      - "kubeshop/kube-webhook-certgen:{{ .Major }}.{{ .Minor }}-amd64"
+      - "kubeshop/kube-webhook-certgen:{{ .Major }}.{{ .Minor }}.{{ .Patch }}-amd64"
+      - "kubeshop/kube-webhook-certgen:latest-amd64"
+    build_flag_templates:
+      - "--platform=linux/amd64"
+      - "--label=org.opencontainers.image.created={{.Date}}"
+      - "--label=org.opencontainers.image.title={{.ProjectName}}"
+      - "--label=org.opencontainers.image.revision={{.FullCommit}}"
+      - "--label=org.opencontainers.image.version={{.Version}}"
+  -
+    dockerfile: Dockerfile
+    use: buildx
+    goos: linux
+    goarch: arm64
+    image_templates:
+      - "kubeshop/kube-webhook-certgen:{{ .Major }}-arm64v8"
+      - "kubeshop/kube-webhook-certgen:{{ .Major }}.{{ .Minor }}-arm64v8"
+      - "kubeshop/kube-webhook-certgen:{{ .Major }}.{{ .Minor }}.{{ .Patch }}-arm64v8"
+      - "kubeshop/kube-webhook-certgen:latest-arm64v8"
+    build_flag_templates:
+      - "--platform=linux/arm64/v8"
+      - "--label=org.opencontainers.image.created={{.Date}}"
+      - "--label=org.opencontainers.image.title={{.ProjectName}}"
+      - "--label=org.opencontainers.image.revision={{.FullCommit}}"
+      - "--label=org.opencontainers.image.version={{.Version}}"
+  -
+    dockerfile: Dockerfile
+    use: buildx
+    goos: linux
+    goarch: arm
+    goarm: 6
+    image_templates:
+      - "kubeshop/kube-webhook-certgen:{{ .Major }}-armv6"
+      - "kubeshop/kube-webhook-certgen:{{ .Major }}.{{ .Minor }}-armv6"
+      - "kubeshop/kube-webhook-certgen:{{ .Major }}.{{ .Minor }}.{{ .Patch }}-armv6"
+      - "kubeshop/kube-webhook-certgen:latest-armv6"
+    build_flag_templates:
+      - "--platform=linux/arm/v6"
+      - "--label=org.opencontainers.image.created={{.Date}}"
+      - "--label=org.opencontainers.image.title={{.ProjectName}}"
+      - "--label=org.opencontainers.image.revision={{.FullCommit}}"
+      - "--label=org.opencontainers.image.version={{.Version}}"
+  -
+    dockerfile: Dockerfile
+    use: buildx
+    goos: linux
+    goarch: arm
+    goarm: 7
+    image_templates:
+      - "kubeshop/kube-webhook-certgen:{{ .Major }}-armv7"
+      - "kubeshop/kube-webhook-certgen:{{ .Major }}.{{ .Minor }}-armv7"
+      - "kubeshop/kube-webhook-certgen:{{ .Major }}.{{ .Minor }}.{{ .Patch }}-armv7"
+      - "kubeshop/kube-webhook-certgen:latest-armv7"
+    build_flag_templates:
+      - "--platform=linux/arm/v7"
+      - "--label=org.opencontainers.image.created={{.Date}}"
+      - "--label=org.opencontainers.image.title={{.ProjectName}}"
+      - "--label=org.opencontainers.image.revision={{.FullCommit}}"
+      - "--label=org.opencontainers.image.version={{.Version}}"
+
+docker_manifests:
+  - name_template: kubeshop/kube-webhook-certgen:{{ .Major }}
+    image_templates:
+      - kubeshop/kube-webhook-certgen:{{ .Major }}-amd64
+      - kubeshop/kube-webhook-certgen:{{ .Major }}-arm64v8
+      - kubeshop/kube-webhook-certgen:{{ .Major }}-armv6
+      - kubeshop/kube-webhook-certgen:{{ .Major }}-armv7
+  - name_template: kubeshop/kube-webhook-certgen:{{ .Major }}.{{ .Minor }}
+    image_templates:
+      - kubeshop/kube-webhook-certgen:{{ .Major }}.{{ .Minor }}-amd64
+      - kubeshop/kube-webhook-certgen:{{ .Major }}.{{ .Minor }}-arm64v8
+      - kubeshop/kube-webhook-certgen:{{ .Major }}.{{ .Minor }}-armv6
+      - kubeshop/kube-webhook-certgen:{{ .Major }}.{{ .Minor }}-armv7
+  - name_template: kubeshop/kube-webhook-certgen:{{ .Major }}.{{ .Minor }}.{{ .Patch }}
+    image_templates:
+      - kubeshop/kube-webhook-certgen:{{ .Major }}.{{ .Minor }}.{{ .Patch }}-amd64
+      - kubeshop/kube-webhook-certgen:{{ .Major }}.{{ .Minor }}.{{ .Patch }}-arm64v8
+      - kubeshop/kube-webhook-certgen:{{ .Major }}.{{ .Minor }}.{{ .Patch }}-armv6
+      - kubeshop/kube-webhook-certgen:{{ .Major }}.{{ .Minor }}.{{ .Patch }}-armv7
+  - name_template: kubeshop/kube-webhook-certgen:latest
+    image_templates:
+      - kubeshop/kube-webhook-certgen:latest-amd64
+      - kubeshop/kube-webhook-certgen:latest-arm64v8
+      - kubeshop/kube-webhook-certgen:latest-armv6
+      - kubeshop/kube-webhook-certgen:latest-armv7
+
+checksum:
+  name_template: "checksums.txt"
+
+changelog:
+  use: "github"
+
+release:
+  draft: false
+  header: |
+    ## {{ .Version }} ({{ .Date }})
+    See https://github.com/kubeshop/kube-webhook-certgen for download links and documentation
+    ## Docker images
+    - `docker pull kubeshop/kube-webhook-certgen:{{ .Major }}`
+    - `docker pull kubeshop/kube-webhook-certgen:{{ .Major }}.{{ .Minor }}`
+    - `docker pull kubeshop/kube-webhook-certgen:{{ .Major }}.{{ .Minor }}.{{ .Patch }}`
+    - `docker pull kubeshop/kube-webhook-certgen:latest`
+
+snapshot:
+  name_template: "{{ .Tag }}"
+
+archives:
+  - format: zip
+    wrap_in_directory: "false"
+    files:
+      - none*
+
+source:
+  enabled: true
+  name_template: "{{ .ProjectName }}_{{ .Version }}_source"
+  format: "zip"
